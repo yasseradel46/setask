@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+<!-- Bootstrap CSS -->
+<link rel="stylesheet"
+	  href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"/>
+<h:head>
+	<title>Vacation System</title>
+
+
+
+	<style type="text/css">
+table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+th, td {
+	text-align: left;
+	padding: 8px;
+}
+
+
+
+body {
+	background-image: url('images/real1.jpg')!important;;
+}
+</style>
+</h:head>
+<h:body>
+
+
+
+	<center>
+
+		<div
+			style="background-color: #007bff7a; width: 750px; border-radius: 5px; margin-left: 100px;">
+			<div>
+				<h3>Apply For Vacation</h3>
+			</div>
+
+			<div class="book-form">
+
+				<h:form id="form">
+					<p:growl id="msg"  sticky="false"  escape="false"/>
+					<h:panelGrid columns="4">
+						<label> Vacation Type :</label>
+						<p:selectOneMenu required="true" requiredMessage="ادخل  نوع الاجازه "  style="width: 100% !important"
+						value="#{formController.request.vacationType.id}" 
+						  id="type">
+								
+								<f:selectItem itemValue="#{null}" itemLabel="Select" ></f:selectItem>
+								<f:selectItems value="#{formController.vacationTypes}" var="p" itemLabel="#{p.vacationType}" itemValue="#{p.id}"></f:selectItems>
+								
+						</p:selectOneMenu>
+
+						<label> Start Date :</label>
+						<p:calendar readonlyInput="true" value="#{formController.request.startDate}" required="true" requiredMessage="ادخل بدايه التاريخ" 
+															id="start"  
+															widgetVar="startDate" navigator="true" pattern="dd/MM/yyyy" showOn="both">
+						<p:ajax event="dateSelect"  process="@this end" listener="#{formController.onStartDateSelect}" update="days"/>									
+						</p:calendar>
+
+						<label> End Date :</label>
+						<p:calendar readonlyInput="true" value="#{formController.request.endDate}" required="true" requiredMessage="ادخل نهايه التاريخ" 
+															id="end"  
+															widgetVar="endDate" navigator="true" pattern="dd/MM/yyyy" showOn="both">
+					
+					    <p:ajax event="dateSelect" process="@this start" listener="#{formController.onEndDateSelect}" update="days"/>	
+					    </p:calendar>
+
+
+						<label> Days :</label>
+						<p:inputText id="days" value="#{formController.request.vacationDays}" readonly="true" />
+
+
+
+
+						<div class="make wow shake">
+							<p:commandButton value="Save" id="reservar" process="@this form:type form:start form:end"
+								update="form:msg form:start form:end form:days" 
+								actionListener="#{formController.addVacationRequest()}" />
+								</div>
+								<div class="make wow shake">
+								<p:commandButton oncomplete="PF('viewBalanceDialog').show()" value="view Balance" 
+								update="balanceForm" 
+								actionListener="#{formController.getEmployeeVacationBalance()}" />
+						</div>
+
+					</h:panelGrid>
+				</h:form>
+			</div>
+		</div>
+
+	</center>
+		
+		<p:dialog widgetVar="viewBalanceDialog"
+					id="viewBalanceDialog" width="50%" styleClass="popup-div3"
+					modal="true" draggable="false">
+					<h:form id="balanceForm">					
+					<p:outputLabel value="Name :" />
+					<p:inputText value="#{formController.employee.employeeName}" readonly="true"
+						 />
+					<p:outputLabel value="Annual Balance :" />
+					<p:inputText value="#{formController.employee.annualBalance}" readonly="true"
+						 />
+						<p:outputLabel value="Sick Balance :" />
+					<p:inputText value="#{formController.employee.sickBalance}" readonly="true"
+						 />
+					
+					</h:form>
+				</p:dialog>
+</h:body>
+</html>
